@@ -92,3 +92,45 @@ class Q_learning:
         if actions[-1] != self.env.target:
             actions = []
         return actions
+    
+    def run(self, source=None):
+        if source is None:
+            state = self.env.reset()
+        else:
+            state = source
+            self.env.state = source
+        
+        actions = [state]
+        for _ in range(100):
+            action = self.greedy_policy(state)
+            state, _ = self.env.step(action)
+            actions.append(action)
+            if self.env.is_finished():
+                break
+        return actions
+
+    def evaluate_agg(self, source = None, n_trials = 10):
+        """It will try to find the best path from source to target n_trials times."""
+        trials_results = []
+        for _ in range(n_trials):
+            if source is None:
+                state = self.env.reset()
+            else:
+                state = source
+                self.env.state = source
+            
+            reward = 0
+            for _ in range(100):
+                action = self.greedy_policy(state)
+                state, r = self.env.step(action)
+                reward += r
+                if self.env.is_finished():
+                    break
+            
+            trials_results.append(reward)
+        
+        return np.mean(trials_results), np.std(trials_results)
+            
+
+            
+
