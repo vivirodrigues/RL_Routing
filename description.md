@@ -17,3 +17,8 @@ To solve this problem with reiforcement learning, we need to identify the action
 
 
 **Enviroment:** Our final goal is to be able to incorporate our learned algorithm to [SUMO](https://eclipse.dev/sumo/), a realistic simulation of urban mobility. However, to facilitate the initial study, we opted to implement an enviroment ourselves using only numpy functions and networkx to deal with the graph functions. This enviroment has the capabilities of performing deterministic or stochastic steps. It verifies if the action is feasible for the current state of the simulation, computes the following state from the action, and returns the reward.
+
+
+## Q-learning
+
+Q-learning was implemented using the epsilon-greedy policy, with linear decay, achieving a value $\varepsilon_{\textrm{min}}$ at the final iteration. The learning rate $\alpha$ was a parameter, and was kept fixed during training (without learning rate decay). The Q-matrix was initialized with all values equal to $0$ and $-\infty$ in pairs $(s, a)$ that are not valid actions, i.e., pairs that there isn't a edge leaving node $s$ to $a$. The value $-\infty$ was used so that these pairs are not selected as the argmax values. 
