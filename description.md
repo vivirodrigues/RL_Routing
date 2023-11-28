@@ -22,3 +22,26 @@ To solve this problem with reiforcement learning, we need to identify the action
 ## Q-learning
 
 Q-learning was implemented using the epsilon-greedy policy, with linear decay, achieving a value $\varepsilon_{\textrm{min}}$ at the final iteration. The learning rate $\alpha$ was a parameter, and was kept fixed during training (without learning rate decay). The Q-matrix was initialized with all values equal to $0$ and $-\infty$ in pairs $(s, a)$ that are not valid actions, i.e., pairs that there isn't a edge leaving node $s$ to $a$. The value $-\infty$ was used so that these pairs are not selected as the argmax values. 
+
+
+### Experiments
+Fixed source, target, run with 20 seeds
+- Deterministic
+    - Learning rate (two reward methods)
+    - Gamma (two reward methods)
+    - Min epsilon
+- Stochastic
+    - Learning rate (two reward methods)
+    - Gamma (two reward methods)
+    - Min epsilon
+
+$\gamma = \{ 0.1, 0.25, 0.5, 0.9, 0.99, 1\}$
+
+
+Vary source, target with 20 seeds
+Fixed parameters
+
+
+
+
+
