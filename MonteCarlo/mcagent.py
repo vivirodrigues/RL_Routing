@@ -1,4 +1,4 @@
-import osmnx as ox;
+import osmnx as ox
 import numpy as np
 import random
 import networkx as nx
@@ -19,12 +19,14 @@ class MCAgent:
             gamma=0.99,
             n_episodes=1000,
             max_steps=1000,
-            min_epsilon = 0.1,
+            min_epsilon=0.1,
+            alpha=False,
+            e_decay_exponentially=True,
             seed=42
     ):
         self.env = env
         self.Q = {}
-        # self.set_Q()
+        self.set_N()
         self.gamma = gamma
         self.n_episodes = n_episodes
         self.max_steps = max_steps
@@ -36,22 +38,20 @@ class MCAgent:
         self.randomicos = []
         self.policy = {}
         self.routes = []
+        self.alpha = alpha
+        self.e_decay_exponentially = e_decay_exponentially
 
-    # def set_Q(self):
-    #     self.Q = np.full((len(self.env.G.nodes), len(self.env.G.nodes)), -np.inf)
-        
-    #     for i in self.env.G.nodes:
-    #         neighbors = list(self.env.G.neighbors(i))        
-    #         self.Q[i, neighbors] = 0                            
-    
-    
-    def update_epsilon(self):
+    def set_N(self):
+        self.N = np.full((len(self.env.G.nodes), len(self.env.G.nodes)), -np.inf)
+
+        for i in self.env.G.nodes:
+            neighbors = list(self.env.G.neighbors(i))
+            self.N[i, neighbors] = 0
+
+    def update_epsilon(self, s=''):
         # make it decay exponentially
         self.epsilon -= (self.max_epsilon - self.min_epsilon) / self.n_episodes
-
-    # def greedy_policy(self, state):
-    #     """Greedy policy that returns the action with the highest Q value"""    
-    #     return np.random.choice(np.where(self.Q[state, :] == np.max(self.Q[state, :]))[0])
+        
 
     def set_seed(self):
         random.seed(self.seed)
@@ -62,13 +62,16 @@ class MCAgent:
         n_random = np.random.uniform(0, 1)
         self.randomicos.append(n_random)
 
+        if self.e_decay_exponentially is False:
+            n = np.sum(self.N[state, :][self.N[state, :] != -np.inf])
+            self.epsilon = self.min_epsilon / (self.min_epsilon + n)
+
         if n_random < self.epsilon:  # explore
             neighbors = list(self.env.G.neighbors(state))  # + [state]
             return random.choice(neighbors)
-        else:  # exploit            
-            # return self.greedy_policy(state)
+        else:  # exploit
             action, got_it = argmax(self.Q, state)
-            if got_it is False:  # if not possible to chose the best action, chose randomly
+            if got_it is False:  # if not possible to choose the best action, chose randomly
                 neighbors = list(self.env.G.neighbors(state))  # + [state]
                 return random.choice(neighbors)
             else:
@@ -79,30 +82,29 @@ class MCAgent:
         # it initializes list of tuples (state, action and reward)
         episode = []
         state = observation
-                
-        for step in range(self.max_steps):            
-            
+
+        for step in range(self.max_steps):
+
             action = self.step(state)  # select an action
             new_state, reward, done = self.env.step(action)  # take action
-                    
+
             episode.append((state, action, reward))
-            state = new_state        
-        
+            state = new_state
+
             if done is True:  # if end simulation, break
                 self.routes = []
                 route = [observation] + [i[1] for i in episode]
                 if route[-1] != self.env.target:
-
                     self.routes.append(route)
-                break                    
-        
+                break
+
         self.evaluation(episode)
-                
+
         return episode
 
     def evaluation(self, episode):
         G = 0
-        
+
         for i in range(len(episode) - 2, -1, -1):
 
             # state, action, reward
@@ -122,35 +124,39 @@ class MCAgent:
                 else:
                     r_.append(G)
                     self.returns.update([((s, a), r_)])
-        
+
         for i, j in list(self.returns.items()):
-            valor_medio = np.sum(j) / len(j)
-            self.Q.update([((i[0], i[1]), valor_medio)])
-            # self.Q[i[0], i[1]] = valor_medio
-        
-        
-        # print(np.argmax(np.array([tempo1, tempo2])))
-        # print(tempo1, tempo2)
-        
+            if self.alpha is False:
+                valor_medio = np.sum(j) / len(j)
+                self.Q.update([((i[0], i[1]), valor_medio)])
+                # self.Q[i[0], i[1]] = valor_medio
+            else:
+                self.N[i[0], i[1]] += 1
+                q = self.Q.get((i[0], i[1]))
+                if q is None:
+                    q = 0
+                g = np.sum(j)
+                valor_medio = q + (1 / self.N[i[0], i[1]]) * (g - q)
+                self.Q.update([((i[0], i[1]), valor_medio)])
         return
 
-    def train(self):        
+    
+    def train(self):
         self.epsilon = self.max_epsilon
-        
+
         self.episode_rewards = []
         self.returns = {}
         for _ in range(self.n_episodes):
-            
-            observation = self.env.reset()            
-            
-            episode = self.generate_episode(observation)           
-            
-            self.episode_rewards.append(np.sum([i[2] for i in episode]))            
-            
-            self.update_epsilon()                       
+            observation = self.env.reset()
+
+            episode = self.generate_episode(observation)
+
+            self.episode_rewards.append(np.sum([i[2] for i in episode]))
+
+            if self.e_decay_exponentially is True:
+                self.update_epsilon()
 
         self.policy = {i: argmax(self.Q, i)[0] for i in range(len(self.env.G.nodes))}
-        # self.policy = {i: self.greedy_policy(i) for i in range(len(self.env.G.nodes))}
 
     def route_to_target(self, source, target):
         route = [source]
