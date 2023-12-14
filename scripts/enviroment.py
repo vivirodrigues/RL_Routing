@@ -12,6 +12,14 @@ class Environment:
         self.max_weight = max([G[u][v][0]["length"] for u, v, m in G.edges if m == 0])
         self.source = source
         self.target = target
+        self.target_point = np.array([G.nodes[target]["x"], G.nodes[target]["y"]])
+        # get x_range and y_range
+        x = [G.nodes[u]["x"] for u in G.nodes]
+        y = [G.nodes[u]["y"] for u in G.nodes]
+        self.x_range = max(x)- min(x)
+        self.y_range = max(y)- min(y)
+        # get diagonal dist
+        self.diagonal_dist = np.sqrt(self.x_range**2 + self.y_range**2)
         self.reward = reward
 
         assert mode in [
@@ -60,6 +68,12 @@ class Environment:
             return self.state, 0, False
         elif self.reward == "weighted":
             return self.state, -w, False
+        elif self.reward == "distance":
+            # get distance to the target
+            point = np.array([self.G.nodes[self.state]["x"], self.G.nodes[self.state]["y"]])
+            distance = np.linalg.norm(point - self.target_point)
+            return self.state, -distance/self.diagonal_dist, False
+            
 
     def step_stochastic(self, action):
         """Return new state, reward, and if the destination is reached"""
