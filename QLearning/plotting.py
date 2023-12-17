@@ -1,6 +1,48 @@
+import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
+def plot_graph(G, source = None, target = None):
+    plt.scatter(
+        [G.nodes[i]["x"] for i in G.nodes],
+        [G.nodes[i]["y"] for i in G.nodes],
+    )
+
+    try:
+        for u, v, m in G.edges:
+            if m == 0:
+                plt.plot(
+                    [G.nodes[u]["x"], G.nodes[v]["x"]],
+                    [G.nodes[u]["y"], G.nodes[v]["y"]],
+                    color="black",
+                    alpha=0.25,
+                )
+    except:
+        for u, v in G.edges:
+            plt.plot(
+                [G.nodes[u]["x"], G.nodes[v]["x"]],
+                [G.nodes[u]["y"], G.nodes[v]["y"]],
+                color="black",
+                alpha=0.25,
+            )
+
+    if source is not None and target is not None:
+        plt.scatter(
+            [G.nodes[source]["x"], G.nodes[target]["x"]],
+            [G.nodes[source]["y"], G.nodes[target]["y"]],
+            color=["green", "red"],
+            alpha=1,
+            s=100,
+        )
+
+        red_patch = mpatches.Patch(color="red", label="Target")
+        green_patch = mpatches.Patch(color="green", label="Source")
+        plt.legend(handles=[red_patch, green_patch])
+
+    plt.xticks([])
+    plt.yticks([])
+
+        
 
 def plot_all_paths_policy(G, policy, source, target):
     """Plot the policy for all states, i.e., for each state, plot an arrow indicating the action to take.
@@ -15,11 +57,7 @@ def plot_all_paths_policy(G, policy, source, target):
     :type target: int
     """
 
-    plt.scatter(
-        [G.nodes[i]["x"] for i in G.nodes],
-        [G.nodes[i]["y"] for i in G.nodes],
-        alpha=0.25,
-    )
+    plot_graph(G, source, target)
 
     for i in G.nodes:
         dest = policy[i]
@@ -37,24 +75,6 @@ def plot_all_paths_policy(G, policy, source, target):
             width=0.0001,
         )
 
-    # plot the source and target
-    plt.scatter(
-        [G.nodes[source]["x"], G.nodes[target]["x"]],
-        [G.nodes[source]["y"], G.nodes[target]["y"]],
-        color=["green", "red"],
-        alpha=1,
-        s=100,
-    )
-
-    # add legend to source and target with the color
-
-    red_patch = mpatches.Patch(color="red", label="Target")
-    green_patch = mpatches.Patch(color="green", label="Source")
-    plt.legend(handles=[red_patch, green_patch])
-
-    plt.xticks([])
-    plt.yticks([])
-    plt.show()
 
 
 def plot_few_steps_policy(G, policy, source, target, steps=5):
@@ -72,21 +92,8 @@ def plot_few_steps_policy(G, policy, source, target, steps=5):
     :type steps: int, optional
     """
 
-    plt.scatter(
-        [G.nodes[i]["x"] for i in G.nodes],
-        [G.nodes[i]["y"] for i in G.nodes],
-        alpha=0.25,
-    )
+    plot_graph(G, source, target)
 
-    # plot the edges
-    for u, v, m in G.edges:
-        if m == 0:
-            plt.plot(
-                [G.nodes[u]["x"], G.nodes[v]["x"]],
-                [G.nodes[u]["y"], G.nodes[v]["y"]],
-                color="black",
-                alpha=0.25,
-            )
 
     state = source
     for i in range(steps):
@@ -106,20 +113,14 @@ def plot_few_steps_policy(G, policy, source, target, steps=5):
         )
         state = dest
 
-    # plot the source and target
+
+def plot_value_func(G, source, target, value_func):
+    plot_graph(G, source, target)
     plt.scatter(
-        [G.nodes[source]["x"], G.nodes[target]["x"]],
-        [G.nodes[source]["y"], G.nodes[target]["y"]],
-        color=["green", "red"],
-        alpha=1,
-        s=100,
+        [G.nodes[i]["x"] for i in G.nodes],
+        [G.nodes[i]["y"] for i in G.nodes],
+        c=value_func,
+        cmap="YlOrRd",
     )
 
-    # add legend to source and target with the color
-
-    red_patch = mpatches.Patch(color="red", label="Target")
-    green_patch = mpatches.Patch(color="green", label="Source")
-    plt.legend(handles=[red_patch, green_patch])
-
-    plt.xticks([])
-    plt.yticks([])
+    

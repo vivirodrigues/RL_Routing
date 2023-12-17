@@ -102,3 +102,8 @@ class Environment:
         elif self.reward == "weighted":
             w_ = w + np.random.normal(scale=0.1)
             return self.state, -w_, False
+        elif self.reward == "distance":
+            # get distance to the target
+            point = np.array([self.G.nodes[self.state]["x"], self.G.nodes[self.state]["y"]])
+            distance = np.linalg.norm(point - self.target_point) + np.random.normal(scale=0.1)
+            return self.state, -distance/self.diagonal_dist, False
