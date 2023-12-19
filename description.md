@@ -4,7 +4,7 @@ Our objective is to use reinforcement learning in the problem of path fiding for
 
  The problem can be defined as follow:
 
-**Definition.**: With a weighted directed graph $G = (V, E)$, and a starting node $v$, find the shortest path to node $u$, i.e., the subset of $E$ that connections $v$ to $u$ and has minimal sum of edges weights.
+**Definition:** With a weighted directed graph $G = (V, E)$, and a starting node $v$, find the shortest path to node $u$, i.e., the subset of $E$ that connects $v$ to $u$ and has minimal sum of edges weights.
 
 ## Reinforcement learning formulation
 
@@ -19,7 +19,7 @@ Our objective is to use reinforcement learning in the problem of path fiding for
 
 There are two considered reward schemes:
 
-- *Unit*: receives reward 10000 if reach goal, reward -1 for chosing to stay at the same position, -1000 if leaves to an dead end, and 0 for other possible actions (valid movements in the graph).
+- *Unit*: receives reward 10000 if reach goal, reward -1 for chosing to stay at the same position, -1000 if leaves to an dead end, and 0 for other possible actions (valid movements in the graph). It is a sparse reward scheme.
 - *Weighted*: receives reward 10000 if reach goal, reward -1 for chosing to stay at the same position, -1000 if leaves to an dead end, and $-w_{u, v}$ for other possible actions (valid movements in the graph). $w_{u, v}$ is the weight of the edge between $u$ and $v$ normalized by the maximum weight of edges.
 
 These reward setups were designed with the intent to [induzir] some behaviors in the agent. The negative reward $-1$ is so that the agent does not learn to stay at the same position. The negative reward $-1000$ at dead ends is also to enforce the agent to avoid dead ends with few visits. 
@@ -35,13 +35,18 @@ The enviroment keeps the current state of the simulation and has the `step` meth
 
 The enviroment can be deterministic or stochastic. The stochastic step has two extra details. First, an action has a random probability of not being possible (we used 5%). Secondly, we add a random gaussian noise to the weights of the edges, this noise is sampled at each step, so the same edge will have different weights at different iterations. Our intention with this stochastic implementation is to simulate the uncertainty of transit, some streets can be randomly not accessible, and the cost of going trought a street can also have different values dependending on the day, time of the day, climate, etc.
 
+## Experimentation setup
+
+Each of the reinforcement learning models will have some parameters that need to be selected, and difference scenarios have different optimal values. For that reason, a common experiment among all methods will be the study of the impact of parameter values in the path cost, computational time and mean reward. It is also important to analyse how the agent work in the four possible scenarios of enviroment and reward: (deterministic, unit), (deterministic, weighted), (stochastic, unit), and (stochastic, weighted). Using a fixed source and target, for each value of a list of selected parameter values, we will execute the training with 20 different random seeds, this will permit to obtain a distribution of the metrics.
+
+
 ## Monte-Carlo
 
 ## Q-learning
 
 ### Implementation details
 
-Q-learning was implemented using the epsilon-greedy policy, with linear decay, achieving a value $\varepsilon_{\textrm{min}}$ at the final iteration. Both the $\varepsilon_{\textrm{max}}$ and $\varepsilon_{\textrm{min}}$ are parameters of the agent, however, there is no reason to have $\varepsilon_{\textrm{max}} \neq 1$. Other parameter was the learning rate $\alpha$, and was kept fixed during training (without learning rate decay). Good values for the learning rate are in the interval $[0, 1]$. $\gamma$, maximum number of steps per episode and number of episodes were the remaining parameters.
+Q-learning was implemented using the epsilon-greedy policy, with linear decay, achieving a value $\varepsilon_{\textrm{min}}$ at the final iteration. Both the $\varepsilon_{\textrm{max}}$ and $\varepsilon_{\textrm{min}}$ are parameters of the agent, however, there is no reason to have $\varepsilon_{\textrm{max}} \neq 1$. Other parameter was the learning rate $\alpha$, and was kept fixed during training (without learning rate decay). Good values for the learning rate are in the interval $[0, 1]$. Other parameters are the discount factor $\gamma$, the maximum number of steps per episode and number of episodes.
 
 The Q-matrix was initialized with all values equal to $0$ and $-\infty$ in pairs $(s, a)$ that are not valid state-actions, i.e., pairs that there isn't a edge leaving node $s$ to $a$. The value $-\infty$ was used so that these pairs are not selected as the argmax values in the greedy policy. 
 
@@ -50,25 +55,98 @@ The Q-matrix was initialized with all values equal to $0$ and $-\infty$ in pairs
 
 #### Parameters analysis
 
-Our agent has to main parameters that need to be considered, the learning rate $\alpha$ and the weight of future rewards $\gamma$. To evaluate the adequate values for these parameters, we perform an experiment to evaluate how the parameter values will impact the path cost, computational time and mean reward. It is also important to analyse how the agent work in the four possible scenarios of enviroment and reward: (deterministic, unit), (deterministic, weighted), (stochastic, unit), and (stochastic, weighted).
+Our agent has to main parameters that need to be considered, the learning rate $\alpha$ and the weight of future rewards $\gamma$. The $\alpha$ values tested are $\{0.05, 0.1, 0.3, 0.5, 0.7\}$ and the $\gamma$ values are $\{0.1, 0.25, 0.5, 0.9, 0.99\}$. When varying $\alpha$, $\gamma = 0.99$, when varying $\gamma$, $\alpha = 0.7$. The experiments were performed with $1000$ episodes of $1000$ steps at max each.
 
-The $\alpha$ values tested are $\{0.05, 0.1, 0.3, 0.5, 0.7\}$ and the $\gamma$ values are $\{0.1, 0.25, 0.5, 0.9, 0.99\}$. When varying $\alpha$, $\gamma = 0.99$, when varying $\gamma$, $\alpha = 0.7$. The experiments were performed with $1000$ episodes of $1000$ steps at max each. For each of the $\alpha$ and $\gamma$ values, we training was executed 20 times using the same pair of source and target, however using a different random seed. We saved the cost of the path found by the policy, the training time and the average reward for episode.
+The following figures presents the results of our experiments. Looking at first column, we see that every reward scheme and enviroment was able to reach the optimal cost (around 1700) with some parameter value. As expected, the optimal policies were obtained with higher $\gamma$ values. Looking at the figures of the unit reward scheme of deterministic and stochastic enviroment, we see that there is not a big relation between the parameter values and the metrics. Because there is not a clear tendecy of increase or decrease, and the deviation (grey area) is really big.
 
+Looking at the third column of the plots of weighted reward with deterministic or stochastic enviroment, we can see that the learning rate of 0.3 obtained high values of mean reward, and in the stochastic enviroment, a bigger learning rate resulted in lower performance. We can also see the positive outcome of increasing the disctount factor.
+
+![Alt text](figures/ql_unit_det.png)
+
+![Alt text](figures/ql_weig_det.png)
+
+![Alt text](figures/ql_unit_sto.png)
+
+![Alt text](figures/ql_weig_sto.png)
 
 #### Generalization
 
-After identying a good parameter values, it is important to evaluate if our agent is able to generalize to different pairs of source and target. This was performed with two analysis, first, we selected 20 random source and target pairs, and using the optimal parameters found, trained the agent to find the path for each of the source, target pair. We saved the duration of training, and average reward per episode and the ratio between the cost of the path found by our agent and the cost of the optimal path.
+After identying a good parameter value, it is important to evaluate if our agent is able to **generalize to different pairs of source and target using the different rewards and enviroments**. First, we selected 20 random source and target pairs, and using the optimal parameters found, trained the agent to find the optimal paths. We saved the duration of training, average reward per episode and the ratio between the cost of the path found by our agent and the cost of the optimal path.
+
+The next figure presents the results of this study, with three boxplots, one for each metric, showing the comparison between the reward schemes and enviroments. Looking first at the computing time, it is possible to see that there is not much difference, with all having around 2 seconds of computing time. Nextly, looking a tthe optimal path, we can see that despite all scenarios having the mean equal to 1 (it is really common to achieve the optimal path), using the weighted reward schemes we obtained results with higher costs, the 3 quartile is around 1.6 times the cost of the optimal path. Next, looking at the rewards, we similarly obtained the same mean values, but the weighted enviroments had a bigger variance in the mean reward per episode, this could be caused because the 20 pairs of source and target will have different routes costs. The overall analysis does not show that the schocastic enviroment was much harder in comparison to the deterministic.
+
+![Boxplot of performance metrics of QLearning with different rewards and enviroments.](figures/qlearning_generalization_fig1.png)
 
 
 The next analysis is to evaluate if an agent trained in a source and target pair can find a path from any of the states to the target, and also if the path found is optimal. To do that, with an trained agent, we selected all possible states and calculated the route find by the policy to the target. We saved the information if the route was found and also the ratio of the cost found and the optimal cost.
 
+The next figure shows the fraction of states such that agent can start from and reach the target at different levels of training. It is possible to see that around 1000 training episodes, the agent can only reach the target from 50% of the states, but at 5000 episodes, it is able to reach from more than 95% of the states. Following, we have another figure showing the routes found by the agent from the different sources (none of these sources were the one that the model trained). It is possible to see that they have some intersections.
 
+![](figures/qlearning_generalization_fig2.png)
+
+![Alt text](figures/qlearning_generalization_fig3.png)
+
+#### Value function
+
+Another interesting analysis is to study how the value function learning by the agent differs at the unit and weighted reward scheme. To do that, we trained the two agents with 1000 episodes with each of the reward schemes. Than, the value function can by obtained from the Q matrix by calculating the max value of each state. The following plot show all states colored by the value function, the more red, the higher the value fucnction. By comparying both plots, we can see that in the unit reward, many nodes that are neighbors of the target have high values, but in the weighted, only a few of them have. This could be caused because the weighted reward scheme prioritize the nodes with the shortest distance, and not any node near the target.
+
+![Alt text](figures/qlearning_value_function.png)
+
+### QLearning with Linear Function
+
+A different implementation of QLearning with linear function as an function approximator was also developed. By using the function approximator, we do not store the matrix Q and use the features of the state and the action to calculate the value of the Q matrix. Our function aproximator has the following formulation:
+
+$$f(X(s, a)) = w_0 + \sum_{i=0}^k X(s, a)_k w_k $$
+
+Where $k$ is the dimension of the feature vector. This weights are updated with gradient descent applied in the error of the Bellman Equation with a learning rate $\alpha$. This implementation was based in the reference from ...
+
+Our problem presents a discrete nature and few features that could be used. We designed few options of features:
+
+- (x,y) coordinates of state, number of neighbors of state, (x, y) coordinates of action, number of neighbors of action (dim 6)
+- one hot encoding of state, one hot encoding of action, and the same faetures of the previous item (dim 2n + 6)
+
+By using the position of states, we consider that nodes that spatially close will have similarity in the Q values. However, by trying a few tests with this approach, it was not obtaining an optimal policy, and them we extended the features by adding the one hot encoding.
+
+### Experiments
+
+Simiarly, we performed experiments to identify the optimal parameter values in the different enviroments and reward schemes. However, as the training is higher than in the QLearning with table, we only evaluated the learning rate parameter. The rates considered were $[0.05, 0.1, 0.3, 0.5]$. It was also necessary to train agents with 5000 episodes, as it was not obtaining good results with fewer steps.
+
+The results are displayed in the following graphs. The black line represents the median values and the grey region marks the 1-3 quartile intervals.
+
+We can see that in the deterministic enviroment, when the learning rate increased, the path cost reduced, comptuing time reduced and mean rewards increased. After the value of learning rate $0.3$, all runs obtained the optimal cost. There is also not a big difference between the computing time of unit or weighted reward schemes.
+
+Looking at the stochastic enviroment, we see a curious pattern that only the learning rate equal to $0.3$ was able to obtain the optimal policy, while the other values did not. This results also not present a big difference between the unit and weighted reward schemes.
+
+![](figures/ql_func_unit_det.png)
+
+![Alt text](figures/ql_func_weig_det.png)
+
+![Alt text](figures/ql_func_unit_sto.png)
+
+![Alt text](figures/ql_func_weig_sto.png)
 
 
 
 ## SARSA
 
 ## DQN
+
+DQN was implemented based in the QLearning algorithm. It was developed with PyTorch and using the reference from the CartPole tutorial. The neural network utilized was of 4 layers, and the dimensions were of .... The features were based in the one used in the function approximator, with that change that now the features are only about the state, not about the action.
+
+The DQN used a replay buffer, and at each iteration of the enviroment, sampled samples from this replay buffer to train the networks. A few changes were necessary to improve the DQN performance:
+
+- The enviroment was used only with the determistic approach;
+- The reward scheme used was only the weighted;
+- A new reward scheme was designed that instead of returning $-w_{(s,a)}$ (cost of edge from $s$ to $a$), it retunrs $-d_{(a, t)}$, the spatial distance between the node $a$ and the target $t$. This reward scheme was designed to incentivize the model to go to states closer to the target.
+- A new reward scheme was designed that returned $-0.5(w_{(s, a)} + d_{(s, a)})$;
+
+### Performance study
+
+With many tentatives, the DQN was not reaching convergence to the optimal path. To study the performance of the approach, we decided to apply it in smaller graphs, and in step by step, increase the number of nodes of the graph to identify how big the models are. 
+
+
+
+One hypothesis for the bad performance of the DQN (it is well know that it is tricky) is that our state space and action space is discrete and really large. The output of the network will be a vector of size $n$, which can be of $605$ in our experiments, a really unusual application of the DQN. 
 
 
 ## Contributions
@@ -77,4 +155,4 @@ The next analysis is to evaluate if an agent trained in a source and target pair
 - Monte Carlo: Vitoria
 - QLearning: Giovani
 - SARSA: Marcos
-- DQN: 
+- DQN: Giovani
