@@ -138,14 +138,13 @@ The DQN used a replay buffer of size 10000, and at each iteration of the envirom
 - The training duration was defined in the number of steps, not in the number of episodes;
 - The enviroment was used only with the determistic approach;
 - The unit reward scheme was not tested;
-- A new reward scheme was designed that instead of returning $-w_{(s,a)}$ (cost of edge from $s$ to $a$), it retunrs $-d_{(a, t)}$, the spatial distance between the node $a$ and the target $t$. This reward scheme was designed to incentivize the model to go to states closer to the target.
-- A new reward scheme was designed that returned $-0.5(w_{(s, a)} + d_{(s, a)})$;
+- A new reward scheme was designed that returned $-0.5(w_{(s,a)} + d_{(s,a)})$, $d_{(a, t)}$ is the spatial distance between the node $a$ and the target $t$. This reward scheme was designed to incentivize the model to go to states closer to the target.
 - Episodes started at random states;
 - We did not permited the target and online policy to select invalid actions, the objective was to reduce the computational cost of fitting many invalid movements;
 
 ### Performance study
 
-Our initial tests showed that it was really difficult to the agent learn the optimal policy, and as the training time of a single agent took around 20 minutes, it was not possible to perform an exaustive experiment of parameters. For that reason, we decided to apply it in smaller graphs, and slowly increase the number of nodes of the graph to understand capabilities of the agent. We can obtain smaller graphs by setting a radius and selecting only the network inside this radius.  We tested this radius with size equal 200, 400 and 600, and performed a few tries with each.
+Our initial tests showed that it was really difficult to the agent learn the optimal policy, and as the training time of a single agent took several minutes, it was not possible to perform an exaustive experiment of parameters. For that reason, we decided to apply it in smaller graphs, and slowly increase the number of nodes of the graph to understand capabilities of the agent. We can obtain smaller graphs by setting a radius and selecting only the network inside this radius.  We tested this radius with size equal 200, 400 and 600, and trained two agents, one with the weighted reward and one with the weighted+distance reward scheme. The training was performed with 500,000 steps each, with the policy being updated every 10,000 steps.
 
 #### Radius 200
 
