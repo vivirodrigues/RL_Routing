@@ -6,8 +6,8 @@ from utils import *
 
 class MCAgent_approx:
 
-    def __init__(self, env, gamma = 0.99, min_epsilon = 0.1, e_decay_exponentially = True,
-        max_epsilon = 1, n_episodes = 100, max_steps = 100, feature_type = "one_hot", seed = None):
+    def __init__(self, env, gamma = 0.9, min_epsilon = 0.7, e_decay_exponentially = True,
+        max_epsilon = 1, n_episodes = 1000, max_steps = 100, feature_type = "one_hot", seed = None):
         self.env = env
         self.G = env.G
         # self.Q = {}
@@ -15,6 +15,7 @@ class MCAgent_approx:
         self.gamma = gamma
         self.min_epsilon = min_epsilon
         self.max_epsilon = max_epsilon
+        self.epsilon = max_epsilon
         self.n_episodes = n_episodes
         self.max_steps = max_steps
         self.seed = seed
@@ -42,8 +43,6 @@ class MCAgent_approx:
 
     def get_feature(self, state, action):
         if self.feature_type == "position":
-            features = self.features[state]
-        elif self.feature_type == "position_action":
             features = np.concatenate((self.features[state], self.features[action]))
         elif self.feature_type == "one_hot":
             features = np.zeros(self.n_states * 2 + 6)
@@ -51,13 +50,9 @@ class MCAgent_approx:
             features[self.n_states + action] = 1
             features[-6:-3] = self.features[state]
             features[-3:] = self.features[action]
-        elif self.feature_type == "one_hot_neighbors":
-            features = np.zeros(self.n_states * 2 + 6)
-            neighbors = list(self.G.neighbors(state)) + [state]
-            features[neighbors] = 1
-            features[self.n_states + action] = 1
-            features[-6:-3] = self.features[state]
-            features[-3:] = self.features[action]
+        elif self.feature_type == "position_large":
+            features = np.zeros(self.n_states * 3)
+            features[3 * state : 3 * state + 3] = self.features[state]
         return features
 
     def linear_func(self, state, action, return_feature = False):
@@ -103,17 +98,14 @@ class MCAgent_approx:
             self.epsilon = self.min_epsilon / (self.min_epsilon + n)
 
         neighbors = list(self.env.G.neighbors(state))
+        if len(neighbors) == 0:
+            return int(state)
 
         if n_random < self.epsilon:  # explore
 
             return random.choice(neighbors)
         else:  # exploit
             return self.greedy_policy(state)
-
-    def greedy_policy(self, state):
-        """Greedy policy that returns the action with the highest Q value"""
-        neighbors = list(self.G.neighbors(state)) + [state]
-        return neighbors[np.argmax([self.linear_func(state, action) for action in neighbors])]
 
     def generate_episode(self, observation):
         """Returns the list with state, action and rewards of the episode"""
@@ -155,20 +147,31 @@ class MCAgent_approx:
             if find_sa_pair is False:
                 # G <- gamma * G + R(t+1)
                 G = (self.gamma * G) + r_t1
-
-                features = self.get_feature(s, a)
                 self.N[s, a] += 1
                 # print('features', features)
 
+                prediction, features = self.linear_func(s, a, True)
+
                 # w = w + alpha [(G - x(s)^T * w) * x(s)]
                 for i in range(len(self.weights)):
-                    self.weights[i] += (1 / self.N[s, a]) * ((G - self.linear_func(s, a, False)) * features[i])
+
+                    self.weights[i] += (1 / self.N[s, a]) * ((G - prediction) * features[i])
+                    #self.weights[i] += 0.6 * ((G - prediction) * features[i])
+                    # print(G, prediction, features[i], self.weights[i], s, a)
                 # print('w', self.weights)
+
+            # print('weights', self.weights)
         return
 
     def argmax(self, state):
         neighbors = list(self.G.neighbors(state)) + [state]
         return np.max([self.linear_func(state, action) for action in neighbors])
+
+    def greedy_policy(self, state):
+        """Greedy policy that returns the action with the highest Q value"""
+        neighbors = list(self.G.neighbors(state)) + [state]
+        return neighbors[np.argmax([self.linear_func(state, action) for action in neighbors])]
+
 
     def update_weights(self, reward, state, action, new_state):
         """Update the weights and bias based on the Bellman equation"""
@@ -183,8 +186,8 @@ class MCAgent_approx:
 
         self.episode_rewards = []
         self.returns = {}
+        observation = self.env.reset()
         for _ in range(self.n_episodes):
-            observation = self.env.reset()
 
             episode = self.generate_episode(observation)
 
@@ -193,13 +196,52 @@ class MCAgent_approx:
             if self.e_decay_exponentially is True:
                 self.update_epsilon()
 
+            observation = self.env.reset_linear()
+
         self.policy = {i : self.greedy_policy(i) for i in range(self.n_states)}
+        print(self.policy)
+    # def route_to_target(self, source, target):
+    #     route = [source]
+    #     state = source
+    #     cost = 0
+    #     k = 0
+    #     while state != target and k < 1000:
+    #         new_state = self.policy[state]
+    #         if new_state == state:
+    #             cost = np.inf
+    #             route.append(new_state)
+    #             break
+    #         cost += self.env.G[state][new_state][0]["length"]
+    #         state = new_state
+    #         route.append(state)
+    #         k += 1
+    #     return route
+    #
+    # def route_cost(self, env):
+    #     source = env.source
+    #     target = env.target
+    #     route = [source]
+    #     state = source
+    #     cost = 0
+    #     k = 0
+    #     while state != target and k < 1000:
+    #         new_state = self.policy[state]
+    #         if new_state == state:
+    #             cost = np.inf
+    #             route.append(new_state)
+    #             break
+    #         cost += env.G[state][new_state][0]["length"]
+    #         state = new_state
+    #         route.append(state)
+    #         k += 1
+    #     return cost
 
     def route_to_target(self, source, target):
         route = [source]
         state = source
         k = 0
         while state != target and k < 1000:
+
             state = self.policy[state]
             route.append(state)
             k += 1
@@ -209,8 +251,8 @@ class MCAgent_approx:
         route = self.route_to_target(env.source, env.target)
         try:
             cost = float(nx.path_weight(env.G, route, "length"))
-            print(cost)
+
         except:
             cost = np.inf
-            print(cost)
+
         return cost
