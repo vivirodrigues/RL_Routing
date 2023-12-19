@@ -131,18 +131,25 @@ Looking at the stochastic enviroment, we see a curious pattern that only the lea
 
 ## DQN
 
-DQN was implemented based in the QLearning algorithm. It was developed with PyTorch and using the reference from the CartPole tutorial. The neural network utilized was of 4 layers, and the dimensions were of .... The features were based in the one used in the function approximator, with that change that now the features are only about the state, not about the action.
+DQN was implemented based in the QLearning algorithm. It was developed with PyTorch and using the reference from the [CartPole tutorial](https://pytorch.org/tutorials/intermediate/reinforcement_q_learning.html). The neural network utilized will have an output layer of size $n$ (number of nodes), and was implemented with 4 layers with dimensions that are function of the size of the graph. The hidden dimensions are: $k, k, 1.5n, 1.5n, n$, in which $k$ is the dimension of the feature vector. The features were similar to the ones used in the function approximator, with that change that now the features are only about the state, not about the action, i.e., we have the one-hot encoding of state and the (x,y) positions.
 
-The DQN used a replay buffer, and at each iteration of the enviroment, sampled samples from this replay buffer to train the networks. A few changes were necessary to improve the DQN performance:
+The DQN used a replay buffer of size 10000, and at each iteration of the enviroment, samples were selected from this replay buffer to train the networks. A few changes were necessary to use the DQN:
 
+- The training duration was defined in the number of steps, not in the number of episodes;
 - The enviroment was used only with the determistic approach;
-- The reward scheme used was only the weighted;
+- The unit reward scheme was not tested;
 - A new reward scheme was designed that instead of returning $-w_{(s,a)}$ (cost of edge from $s$ to $a$), it retunrs $-d_{(a, t)}$, the spatial distance between the node $a$ and the target $t$. This reward scheme was designed to incentivize the model to go to states closer to the target.
 - A new reward scheme was designed that returned $-0.5(w_{(s, a)} + d_{(s, a)})$;
+- Episodes started at random states;
+- We did not permited the target and online policy to select invalid actions, the objective was to reduce the computational cost of fitting many invalid movements;
 
 ### Performance study
 
-With many tentatives, the DQN was not reaching convergence to the optimal path. To study the performance of the approach, we decided to apply it in smaller graphs, and in step by step, increase the number of nodes of the graph to identify how big the models are. 
+Our initial tests showed that it was really difficult to the agent learn the optimal policy, and as the training time of a single agent took around 20 minutes, it was not possible to perform an exaustive experiment of parameters. For that reason, we decided to apply it in smaller graphs, and slowly increase the number of nodes of the graph to understand capabilities of the agent. We can obtain smaller graphs by setting a radius and selecting only the network inside this radius.  We tested this radius with size equal 200, 400 and 600, and performed a few tries with each.
+
+#### Radius 200
+
+Our first test with radius 200 and weighted reward scheme was not able to achieve the optimal policy. We trained for 200,000 iterations, with an updated of the target network at every 1000 iterations. By looking at the evolution of the policy, we can see that at iteration 125000, the policy was the optimal, however, later at step 175000, this changed to a not optimal policy. By looking at the final policy of all states, we can see that we have almost the perfect path from source to target, missing only one edge.
 
 
 
