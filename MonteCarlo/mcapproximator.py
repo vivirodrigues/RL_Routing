@@ -44,6 +44,10 @@ class MCAgent_approx:
     def get_feature(self, state, action):
         if self.feature_type == "position":
             features = np.concatenate((self.features[state], self.features[action]))
+        elif self.feature_type == "x":
+            features = np.zeros(2)
+            features[0] = self.env.G.nodes[state]['x']
+            features[1] = self.env.G.nodes[state]['y']
         elif self.feature_type == "one_hot":
             features = np.zeros(self.n_states * 2 + 6)
             features[state] = 1
@@ -74,6 +78,10 @@ class MCAgent_approx:
         """
         features = self.get_feature(state, action)
         prediction = np.dot(self.weights, features)
+        #print(prediction)
+
+        prediction = np.dot(self.weights, features)
+        print(prediction)
         if return_feature:
             return prediction, features
         return prediction
@@ -145,20 +153,19 @@ class MCAgent_approx:
 
             # check if s,a are the first visit
             if find_sa_pair is False:
-                # G <- gamma * G + R(t+1)
-                G = (self.gamma * G) + r_t1
+                
                 self.N[s, a] += 1
-                # print('features', features)
 
                 prediction, features = self.linear_func(s, a, True)
 
-                # w = w + alpha [(G - x(s)^T * w) * x(s)]
+                
                 for i in range(len(self.weights)):
+                    G += r_t1
+                    #G = (self.gamma * G) + r_t1
 
-                    self.weights[i] += (1 / self.N[s, a]) * ((G - prediction) * features[i])
-                    #self.weights[i] += 0.6 * ((G - prediction) * features[i])
-                    # print(G, prediction, features[i], self.weights[i], s, a)
-                # print('w', self.weights)
+                    # w = w + alpha [(G - x(s)^T * w) * x(s)]
+                    self.weights[i] += 0.5 * ((G - prediction) * features[i])
+                    
 
             # print('weights', self.weights)
         return
@@ -171,15 +178,6 @@ class MCAgent_approx:
         """Greedy policy that returns the action with the highest Q value"""
         neighbors = list(self.G.neighbors(state)) + [state]
         return neighbors[np.argmax([self.linear_func(state, action) for action in neighbors])]
-
-
-    def update_weights(self, reward, state, action, new_state):
-        """Update the weights and bias based on the Bellman equation"""
-        target = reward + self.gamma * self.argmax(new_state)
-        prediction, features = self.linear_func(state, action, True)
-        error = target - prediction
-        for i in range(len(self.weights)):
-            self.weights[i] += self.learning_rate * error * features[i]
 
     def train(self):
         self.epsilon = self.max_epsilon
@@ -199,42 +197,6 @@ class MCAgent_approx:
             observation = self.env.reset_linear()
 
         self.policy = {i : self.greedy_policy(i) for i in range(self.n_states)}
-        print(self.policy)
-    # def route_to_target(self, source, target):
-    #     route = [source]
-    #     state = source
-    #     cost = 0
-    #     k = 0
-    #     while state != target and k < 1000:
-    #         new_state = self.policy[state]
-    #         if new_state == state:
-    #             cost = np.inf
-    #             route.append(new_state)
-    #             break
-    #         cost += self.env.G[state][new_state][0]["length"]
-    #         state = new_state
-    #         route.append(state)
-    #         k += 1
-    #     return route
-    #
-    # def route_cost(self, env):
-    #     source = env.source
-    #     target = env.target
-    #     route = [source]
-    #     state = source
-    #     cost = 0
-    #     k = 0
-    #     while state != target and k < 1000:
-    #         new_state = self.policy[state]
-    #         if new_state == state:
-    #             cost = np.inf
-    #             route.append(new_state)
-    #             break
-    #         cost += env.G[state][new_state][0]["length"]
-    #         state = new_state
-    #         route.append(state)
-    #         k += 1
-    #     return cost
 
     def route_to_target(self, source, target):
         route = [source]
