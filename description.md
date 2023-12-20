@@ -42,7 +42,7 @@ Each of the reinforcement learning models will have some parameters that need to
 
 ## Monte-Carlo
 
-According to Richard S. Sutton and Andrew G. Barto (2018), for each state-action pair, the Monte Carlo methods sample and average returns. From the perspective of the previous state, the problem becomes non-stationary since every action choice is undergoing learning. Considering the theoretical assumptions of Monte Carlo, we implemented this method using epsilon-greedy in two configurations: the first uses the parameters fixed discount factor $\gamma$ = 0.9, $\alpha$ = 1/ $N_{\textrm{0}}$, and $\varepsilon$ = $N_{\textrm{0}}$ / $N_{\textrm{0}}$ + $N_{\textrm{s_{\textrm{t}}$. The second one applies the $\varepsilon$ variable, which decays linearly during the training. In this case, we defined each experiment's discount factor $\gamma$, the $\varepsilon_{\textrm{min}}$ and $\varepsilon_{\textrm{max}}$.
+According to Richard S. Sutton and Andrew G. Barto (2018), for each state-action pair, the Monte Carlo methods sample and average returns. From the perspective of the previous state, the problem becomes non-stationary since every action choice is undergoing learning. Considering the theoretical assumptions of Monte Carlo, we implemented this method using epsilon-greedy in two configurations: the first uses the parameters fixed discount factor $\gamma$ = 0.9, $\alpha$ = 1/ $N_{\textrm{0}}$, and $\varepsilon$ = $N_{\textrm{0}}$ / $N_{\textrm{0}}$ + $N_{\textrm{s{\textrm{t}}$. The second one applies the $\varepsilon$ variable, which decays linearly during the training. In this case, we defined each experiment's discount factor $\gamma$, the $\varepsilon_{\textrm{min}}$ and $\varepsilon_{\textrm{max}}$.
 
 ### Experiments
 
@@ -57,20 +57,20 @@ According to the Figure, the experiment demonstrates its most inferior performan
 
 The second experiment applies different values for discount factor $\gamma$ and $\varepsilon_{\textrm{min}}$, which are fixed during model's training. In this case, we do not use $\alpha$ and the $\varepsilon$ decays linearly from maximum until minimum value. The Figure bellow presents the unit reward and deterministic environment.
 
-FIGURA UNIT DETERMINISTIC 2
+![Alt text](figures/unit_deterministic.png)
 
 
 According to the Figure, increasing the value of $\varepsilon_{\textrm{min}}$ also increases the mean of the cost metric, representing the route's total distance. In this sense, it receives higher rewards in lower $\varepsilon_{\textrm{min}}$ values. In this perspective, it is more suitable to use the 0.1 value, which also performs better in computational time. Also, increasing the discount factor gamma ($\gamma$) performs better on cost, computational time, and reward metrics. The unit deterministic model's behavior is similar to the unit stochastic, as shown in the Figure below.
 
-FIGURA UNIT STOCHASTIC 2
+![Alt text](figures/unit_stochastic.png)
 
 In the stochastic environment, the model performs better when it implements low values of minimum epsilon (between 0 and 1) and high values of the discount factor gamma < 1. There is no significant difference between deterministic and stochastic environments using unit reward. The weighted reward had more differences, which is shown in the Figure below.
 
-FIGURAA WEIGHTED DETERMINISTIC 2
+![Alt text](figures/weighted_deterministic.png)
 
 The route cost of weighted deterministic model do not have many variations, but the rewards are higher on low values of minimum epsilon, which indicates a better performance. Besides, the rewards have stabilized between 0.5 and 0.99 values, but the mean cost is lower on 0.9 gamma value, which represents a route with few nodes (shortest). This behavior is similat to weighted stochastic environment, as the figure below shows.
 
-FIGURA WEIGHTED STOCHASTIC
+![Alt text](figures/weighted_stochastic.png)
 
 According to the Figure, the best gamma value for the experiment is 0.9, as it achieves the higher reward mean value with lower route distance cost and a low computational time. Despite the values of the minimum epsilon do not demonstrate significant differences on the results, the lower values are better the values close to 1. The weighted reward models minimizes the mean rewards of the obteined routes, which indicates that less routes reached the target then unit reward models.
 
