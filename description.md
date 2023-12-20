@@ -41,7 +41,7 @@ We implemented our environment using Numpy, OSMnx, and Networkx libraries to sup
 <p>         Figure 1 - Campinas city network</p>
 
 The environment keeps the current state of the simulation and has the step method. This method receives an action and, according to the current state, returns to the new state of performing this action. It also returns the reward obtained from the action. If the action is possible, i.e., there is an edge from
-the state to the action node, it performs the step and updates the state. Otherwise, the state stays at v.
+the state $v$ to the action node $u$, it performs the step and updates the state. Otherwise, the state stays at $v$.
 
 We implemented deterministic and stochastic environments. The stochastic step has two extra details. First, an action has a random probability of not being possible (we used 5%). Secondly, we add a random Gaussian noise to the weights of the edges; this noise is sampled at each step so that the same edge will have different weights at different iterations. Our intention with this stochastic implementation is to simulate the uncertainty of transit; some streets can be randomly inaccessible, and the cost of going through a street can also have different values depending on the day, time of the day, climate, etc.
 
