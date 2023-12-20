@@ -42,7 +42,7 @@ Each of the reinforcement learning models will have some parameters that need to
 
 ## Monte-Carlo
 
-According to Richard S. Sutton and Andrew G. Barto (2018), for each state-action pair, the Monte Carlo methods sample and average returns. From the perspective of the previous state, the problem becomes non-stationary since every action choice is undergoing learning. Considering the theoretical assumptions of Monte Carlo, we implemented this method using epsilon-greedy in two configurations: the first uses the parameters fixed discount factor $\gamma$ = 0.9, $\alpha$ = 1/ $N_{\textrm{0}}$, and $\varepsilon$ = $N_{\textrm{0}}$ / $N_{\textrm{0}}$ + $N_{\textrm{s{\textrm{t}}$. The second one applies the $\varepsilon$ variable, which decays linearly during the training. In this case, we defined each experiment's discount factor $\gamma$, the $\varepsilon_{\textrm{min}}$ and $\varepsilon_{\textrm{max}}$.
+According to Richard S. Sutton and Andrew G. Barto (2018), for each state-action pair, the Monte Carlo methods sample and average returns. From the perspective of the previous state, the problem becomes non-stationary since every action choice is undergoing learning. Considering the theoretical assumptions of Monte Carlo, we implemented this method using epsilon-greedy in two configurations: the first uses the parameters fixed discount factor $\gamma$ = 0.9, $\alpha$ = 1/ $N_{\textrm{0}}$, and $\varepsilon$ = $N_{\textrm{0}}$ / $N_{\textrm{0}}$ + $N_{\textrm{s_{t}}}$. The second one applies the $\varepsilon$ variable, which decays linearly during the training. In this case, we defined each experiment's discount factor $\gamma$, the $\varepsilon_{\textrm{min}}$ and $\varepsilon_{\textrm{max}}$.
 
 ### Experiments
 
