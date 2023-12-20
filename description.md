@@ -141,7 +141,7 @@ Where $X(s,a)$ is a function that returns the feature vector using state and act
 
 In Monte Carlo, we update the weights vector at the end of the episode, using the following equation.  
 
-$$w_k = w_k + \alpha [(\sum_{j=t}^L_k r(k, j) - f(X(s, a) w) X(s, a)_k) $$
+$$w_k = w_k + \alpha [(\sum_{j=t}^L r(k, j) - f(X(s, a) w) X(s, a)_k) $$
 
 Where $L$ is the dimension of episode, t is the discreptization of time, $\alpha$ is the learning rate.
 
@@ -149,7 +149,7 @@ Besides, we implemented a feauture vector using one hot encoding of state, one h
 
 The Monte Carlo with linear function model did not converge using the previous equation, as we can see in reaward per episode presented in Figure 14.
 
-![Alt text](figures/mc_linear1.png)
+![Alt text](figures/mc_linear_1.png)
 <p>           Figure 14 - Rewards per episode using Monte-Carlo with linear function</p>
 
 The results in Figure 14 demonstrate that the agent reaches the target in some episodes because the reward is 1000. However, the agent no longer reaches the target node as we decrease $\epsilon$ during the model's training. It indicates that it depends on random choices of actions in exploration, so the agent did not learn how to find the target.
