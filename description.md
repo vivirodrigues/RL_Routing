@@ -217,7 +217,68 @@ Looking at the stochastic environment, we see a curious pattern that only the le
 
 ![](figures/ql_func_weig_sto.png)
 
-## SARSA
+
+## SARSA (State-Action-Reward-State-Action)
+
+### Implementation details
+
+SARSA was implemented based on Q-Learning approach, but varing Q-matrix value definition by using an on-policy method:
+
+$$Q(s, a) \leftarrow  Q(s,a) + \alpha(r + \gamma Q(s{'}, a{'}) - Q(s,a)) $$
+
+It is worth mentioning that it was initialized with all values equal to $0$ and $-\infty$ in pairs $(s, a)$ that are not valid state-actions, i.e., pairs that there isn't an edge leaving node $s$ to $a$. The value $-\infty$ was used so that these pairs are not selected in the greedy policy.
+
+### Experiments
+
+#### Parameters analysis
+
+The values tested were:
+* Learning rate $\alpha$: $\{0.05, 0.1, 0.3, 0.5, 0.7\}$
+* Gamma $\gamma$: $\{0.1, 0.25, 0.5, 0.9, 0.99\}$
+* Episodes: $1000$
+* Steps: $1000$
+
+Notice that, when varying $\alpha$, $\gamma = 0.99$ and when varying $\gamma$, $\alpha = 0.7$. 
+
+The following graphs presents the results obtained on the scenarios mentioned above considering the unit reward. Notice that there is no much variation, speacially regarding the learning rate variation versus reward graph
+
+![](figures/sarsa_unit_det.png)
+
+![](figures/sarsa_unit_sto.png)
+
+Now, when considering the weighted reward, there is an important variation, specially when increasing the learning rate on the stochastic environment:
+
+![](figures/sarsa_weig_det.png)
+
+![](figures/sarsa_weig_sto.png)
+
+That lead us to consider that there is no much impact on getting locked between local minumn when using such approach, which is interesting considering processing time and path cost variation while increasing the reward.
+
+#### Generalization
+
+Using the same approach from the Q-Learning generalization, the following graph shows the SARSA performance.
+
+![Boxplot of performance metrics of QLearning with different rewards and enviroments.](figures/sarsa_generalization_fig1.png)
+
+Comparing this result with what was seen for Q-Learning and Monte Carlo, it is possible to see the difference between the off-policy and on-policy influence on acheiving the best path performance, compared to the Monte Carlo behavior, which even requiring more processing time, starts with a very interesting performance compared to the other time-difference algorithms
+
+![](figures/sarsa_generalization_fig4.png)
+
+#### Value function
+
+This is a study showing the value function behavior comparing the unit reward against the weighted one, showing that there is a better performance on the second one considering that with less marked points on the weighted one, we have a fast convergence to the best path when compared to the unit model.
+
+![](figures/sarsa_value_function.png)
+
+### SARSA with Linear Function
+
+Considering the approach used on the Q-Learning for the value function, a test was made by changing the process that updates the weights on the environment to consider the on-policy equation from SARSA, using the same testing procedure done there.
+
+### Experiments
+
+The results are displayed in the following graphs. The black line represents the median values, and the grey region marks the 1-3 quartile intervals.
+
+![](figures/sarsa_func_det.png)
 
 ## DQN
 
