@@ -34,11 +34,16 @@ In the *unit* reward scheme, there is no use of the edge weights, so there is no
 
 ### Environment
 
-Our final goal is to be able to incorporate our learned algorithm into [SUMO](https://eclipse.dev/sumo/), a realistic simulation of urban mobility. However, to facilitate the initial study, we opted to implement our own environment using only numpy and networks to support graph objects. 
+We implemented our environment using Numpy, OSMnx, and Networkx libraries to support graph objects. The scenario is a Geographic Network of Campinas city, in São Paulo, Brazil. It contains 605 nodes representing corners, and the edges correspond to streets for cars. Figure 1 presents the network.
 
-The environment keeps the current state of the simulation and has the `step` method. This method receives an action and, according to the current state, returns to the new state of performing this action. It also returns the reward obtained from the action. If the action is possible, i.e., there is an edge from $v$ to $u$, it performs the step and updates the state to $u$. Otherwise, the state stays at $v$. 
 
-The environment can be deterministic or stochastic. The stochastic step has two extra details. First, an action has a random probability of not being possible (we used 5%). Secondly, we add a random Gaussian noise to the weights of the edges; this noise is sampled at each step, so the same edge will have different weights at different iterations. Our intention with this stochastic implementation is to simulate the uncertainty of transit; some streets can be randomly not accessible, and the cost of going through a street can also have different values depending on the day, time of the day, climate, etc.
+![Alt text](figures/network.png)
+<p>         Figure 2 - Campinas city network</p>
+
+The environment keeps the current state of the simulation and has the step method. This method receives an action and, according to the current state, returns to the new state of performing this action. It also returns the reward obtained from the action. If the action is possible, i.e., there is an edge from
+the state to the action node, it performs the step and updates the state. Otherwise, the state stays at v.
+
+We implemented deterministic and stochastic environments. The stochastic step has two extra details. First, an action has a random probability of not being possible (we used 5%). Secondly, we add a random Gaussian noise to the weights of the edges; this noise is sampled at each step so that the same edge will have different weights at different iterations. Our intention with this stochastic implementation is to simulate the uncertainty of transit; some streets can be randomly inaccessible, and the cost of going through a street can also have different values depending on the day, time of the day, climate, etc.
 
 ## Experimentation setup
 
