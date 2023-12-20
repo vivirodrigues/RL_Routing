@@ -56,44 +56,44 @@ The experiments of Monte Carlo methods are performed on a computer with Intel(R)
 
 The first experiment implements three different values for $N{\textrm{0}}$: 200, 600, and 1000. These values are fixed during model's training. We use the $N{\textrm{0}}$ variable to update $\varepsilon$ and $\alpha$, which decreases during training. The Figure below presents the results of the cost, computational time, and rewards for unit reward and deterministic environment. The cost represents the total distance of the route; the computational time shows the training duration, and the rewards are obtained during the training of the model.
 
-![Alt text](figures/unit_deterministic1.png)
-<p style="text-align: center;">Figure 1 - Cost, computational time and reward obtained in unit deterministic environment</p>
+![Alt text](figures/mc_unit_deterministic1.png)
+<center>Figure 1 - Cost, computational time and reward obtained in unit deterministic environment</center>
 
 
 According to the Figure, the experiment demonstrates its most inferior performance when the N0 variable is 200, because its configuration implies in routes with high values of route cost. Also, the obtained reward values are lower. We obtained a decrease in the average cost of the route, that is, the total distance traveled, as we increased the value of N0 while the average rewards increased. Its behavior indicates that when N0 equals one thousand, we have routes that reach the target using shorter paths. Also, the computational time for executing model training increases when N0 equals one thousand. Continuing in the deterministic environment, Figure 2 below represents the results for weighted reward.
 
-![Alt text](figures/weighted_deterministic1.png)
-<p style="text-align: center;">Figure 2 - Cost, computational time and reward obtained</p>
+![Alt text](figures/mc_weighted_deterministic1.png)
+<center>Figure 2 - Cost, computational time and reward obtained</center>
 
 The main difference between unit and weighted reward results in a deterministic environment is that N0 600 has more variance in results. However, in both reward methods, the N0 1000 achieves a route mean cost close to the optimal 1700. In this perspective, in the weighted deterministic scenario, we have N0 1000 as the best result despite the increase in the computational time of execution. Figure 3 shows the unit stochastic environment.
 
-![Alt text](figures/unit_stochastic1.png)
-<center><p style="text-align: center;">Figure 3 - Cost, computational time and reward obtained</p></center>
+![Alt text](figures/mc_unit_stochastic1.png)
+<center>Figure 3 - Cost, computational time and reward obtained</center>
 
 In the unit reward and stochastic environment, the cost result was more stable for different values of N0. According to the execution time graphic, the value 1000 for N0 corresponds to an average computational time of more than 150 seconds. Still, its configuration represents the best mean route cost and mean reward obtained. Then, Figure 4 shows the weighted stochastic environment.
 
-![Alt text](figures/weighted_stochastic1.png)
-<p style="text-align: center;">Figure 4 - Cost, computational time and reward obtained</p>
+![Alt text](figures/mc_weighted_stochastic1.png)
+<center>Figure 4 - Cost, computational time and reward obtained</center>
 
 Both weighted and unit reward methods perform similarly, achieving a value of more than 800 as the mean reward when N0 equals 1000. A difference from deterministic environment is that the mean of rewards when N0 600 is worst than other N0 values. However, N0 1000 is the best result for all reward methods and environments.
 
 
 The second experiment applies different values for discount factor $\gamma$ and $\varepsilon_{\textrm{min}}$, which are fixed during model's training. In this case, we do not use $\alpha$ and the $\varepsilon$ decays linearly from maximum until minimum value. The Figure bellow presents the unit reward and deterministic environment.
 
-![Alt text](figures/unit_deterministic.png)
+![Alt text](figures/mc_unit_deterministic.png)
 
 
 According to the Figure, increasing the value of $\varepsilon_{\textrm{min}}$ also increases the mean of the cost metric, representing the route's total distance. In this sense, it receives higher rewards in lower $\varepsilon_{\textrm{min}}$ values. In this perspective, it is more suitable to use the 0.1 value, which also performs better in computational time. Also, increasing the discount factor gamma ($\gamma$) performs better on cost, computational time, and reward metrics. The unit deterministic model's behavior is similar to the unit stochastic, as shown in the Figure below.
 
-![Alt text](figures/unit_stochastic.png)
+![Alt text](figures/mc_unit_stochastic.png)
 
 In the stochastic environment, the model performs better when it implements low values of minimum epsilon (between 0 and 1) and high values of the discount factor gamma < 1. There is no significant difference between deterministic and stochastic environments using unit reward. The weighted reward had more differences, which is shown in the Figure below.
 
-![Alt text](figures/weighted_deterministic.png)
+![Alt text](figures/mc_weighted_deterministic.png)
 
 The route cost of weighted deterministic model do not have many variations, but the rewards are higher on low values of minimum epsilon, which indicates a better performance. Besides, the rewards have stabilized between 0.5 and 0.99 values, but the mean cost is lower on 0.9 gamma value, which represents a route with few nodes (shortest). This behavior is similat to weighted stochastic environment, as the figure below shows.
 
-![Alt text](figures/weighted_stochastic.png)
+![Alt text](figures/mc_weighted_stochastic.png)
 
 According to the Figure, the best gamma value for the experiment is 0.9, as it achieves the higher reward mean value with lower route distance cost and a low computational time. Despite the values of the minimum epsilon do not demonstrate significant differences on the results, the lower values are better the values close to 1. The weighted reward models minimizes the mean rewards of the obteined routes, which indicates that less routes reached the target then unit reward models.
 
