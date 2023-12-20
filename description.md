@@ -1,6 +1,8 @@
 # Navigating Networks: A Reinforcement Learning Approach to Path Optimization
 ### Reinforcement Learning for Routing
 
+<p>Authors: Giovani, Maria Vitória Rodrigues Oliveira (262884), Marcos </p>
+
 Networks consist of nodes and edges, where nodes may represent entities such as people or animals, and edges signify their connections or relationships, such as social ties or the food chain. In the context of Geographic Networks, the scenario's geographic area is virtualized. In this virtual representation, vertices symbolize road corners, and edges delineate the streets, capturing the spatial relationships within the network.
 
 The shortest path between two nodes in a network may suggest the route with the minimum distance, reduced fuel consumption, or even a shorter time requirement. The edge cost of a Geographic Network could be the distance between the two nodes. In this perspective, this work presents optimized routes between two nodes in a geographic network, comparing the performance of different reinforcement learning methods.
@@ -268,6 +270,12 @@ By using the larger graph, with more than 100 nodes, we achive a similar result.
 
 One hypothesis for the bad performance of the DQN (it is well known that it is tricky) is that our state space and action space are discrete and really large. The output of the network will be a vector of size $n$, which can be $605$ in our experiments, a really unusual application of the DQN. 
 
+## Conclusion
+
+
+This work evaluated suggestion route approaches using different Reinforcement Learning methods. Considering the Monte Carlo algorithm, the N0 1000 reduced the route cost, and its policy provided almost 100% generalization, as the new sources reached the target with the same deterministic policy. This method is suitable for both stochastic and deterministic environments and for unit and weighted rewards.
+
+In future works, we suggest incorporating the algorithms into [SUMO](https://eclipse.dev/sumo/), a realistic simulation of urban mobility. In this case, it would be possible to integrate traffic, gas, velocity, and time into the environment. We also suggest adding stop points before reaching the target node.
 
 ## Contributions
 
