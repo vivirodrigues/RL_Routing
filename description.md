@@ -63,12 +63,12 @@ According to the Figure, the experiment demonstrates its most inferior performan
 The main difference between unit and weighted reward results in a deterministic environment is that N0 600 has more variance in results. However, in both reward methods, the N0 1000 achieves a route mean cost close to the optimal 1700. In this perspective, in the weighted deterministic scenario, we have N0 1000 as the best result despite the increase in the computational time of execution. Figure 3 shows the unit stochastic environment.
 
 ![Alt text](figures/unit_stochastic.png)
-<p style="text-align: center;">Figure 3 - Cost, computational time and reward obtained</p>
+<center><p style="text-align: center;">Figure 3 - Cost, computational time and reward obtained</p></center>
 
 In the unit reward and stochastic environment, the cost result was more stable for different values of N0. According to the execution time graphic, the value 1000 for N0 corresponds to an average computational time of more than 150 seconds. Still, its configuration represents the best mean route cost and mean reward obtained. Then, Figure 4 shows the weighted stochastic environment.
 
 ![Alt text](figures/weighted_stochastic.png)
-<p style="text-align: center;">Figure 3 - Cost, computational time and reward obtained</p>
+<p style="text-align: center;">Figure 4 - Cost, computational time and reward obtained</p>
 
 Both weighted and unit reward methods perform similarly, achieving a value of more than 800 as the mean reward when N0 equals 1000. A difference from deterministic environment is that the mean of rewards when N0 600 is worst than other N0 values. However, N0 1000 is the best result for all reward methods and environments.
 
