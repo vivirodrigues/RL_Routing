@@ -141,7 +141,7 @@ Where $X(s,a)$ is a function that returns the feature vector using state and act
 
 In Monte Carlo, we update the weights vector at the end of the episode, using the following equation.  
 
-$$w_k = w_k + \alpha [(\sum_{j=t}^L r(k, j) - f(X(s, a) w) X(s, a)_k) $$
+$$w_k = w_k + \alpha [(\sum_{j=t}^L r(k, j) - f(X(s, a) w) X(s, a)_k)] $$
 
 Where $L$ is the dimension of episode, t is the discreptization of time, $\alpha$ is the learning rate.
 
