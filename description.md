@@ -131,6 +131,29 @@ According to Figure 12, the unit stochastic environment acquires better mean val
 
 The weighted reward method has more variance on N0 600 than the unit method using a stochastic environment. In this comparison, fewer nodes achieve the target in weighted reward. In this perspective, the unit stochastic environment performs better using N0 200 and 600, but all configurations obtained almost the same behavior for N0 1000.
 
+### Monte Carlo with Linear function
+
+We implemented a linear function approximator described as follows.
+
+$$f(X(s, a)) = \sum_{i=0}^k X(s, a)_k w_k $$
+
+Where $X(s,a)$ is a function that returns the feature vector using state and action as input; $k$ is the dimension of the feature vector, and $w$ is the weights vector.
+
+In Monte Carlo, we update the weights vector at the end of the episode, using the following equation.  
+
+$$w_k = w_k + \alpha [(\sum_{j=t}^L_k r(k, j) - f(X(s, a) w) X(s, a)_k) $$
+
+Where $L$ is the dimension of episode, t is the discreptization of time, $\alpha$ is the learning rate.
+
+Besides, we implemented a feauture vector using one hot encoding of state, one hot encoding of action, (x,y) coordinates of state, number of neighbors of state, (x, y) coordinates of action, number of neighbors of action.
+
+The Monte Carlo with linear function model did not converge using the previous equation, as we can see in reaward per episode presented in Figure 14.
+
+![Alt text](figures/mc_linear1.png)
+<p>           Figure 14 - Rewards per episode using Monte-Carlo with linear function</p>
+
+The results in Figure 14 demonstrate that the agent reaches the target in some episodes because the reward is 1000. However, the agent no longer reaches the target node as we decrease $\epsilon$ during the model's training. It indicates that it depends on random choices of actions in exploration, so the agent did not learn how to find the target.
+
 ## Q-learning
 
 ### Implementation details
