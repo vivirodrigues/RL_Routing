@@ -1,7 +1,7 @@
 # Navigating Networks: A Reinforcement Learning Approach to Path Optimization
 ### Reinforcement Learning for Routing
 
-<p>Authors: Giovani, Maria Vitória Rodrigues Oliveira (262884), Marcos </p>
+<p>Authors: Giovani de Almeida Valdrighi (272455), Maria Vitória Rodrigues Oliveira (262884), Marcos </p>
 
 Networks consist of nodes and edges, where nodes may represent entities such as people or animals, and edges signify their connections or relationships, such as social ties or the food chain. In the context of Geographic Networks, the scenario's geographic area is virtualized. In this virtual representation, vertices symbolize road corners, and edges delineate the streets, capturing the spatial relationships within the network.
 
@@ -217,8 +217,6 @@ Looking at the stochastic environment, we see a curious pattern that only the le
 
 ![](figures/ql_func_weig_sto.png)
 
-
-
 ## SARSA
 
 ## DQN
@@ -268,14 +266,20 @@ By using the larger graph, with more than 100 nodes, we achive a similar result.
 
 ![](figures/dqn_600_agent2.png)
 
-One hypothesis for the bad performance of the DQN (it is well known that it is tricky) is that our state space and action space are discrete and really large. The output of the network will be a vector of size $n$, which can be $605$ in our experiments, a really unusual application of the DQN. 
+ 
 
 ## Conclusion
 
 
 This work evaluated suggestion route approaches using different Reinforcement Learning methods. Considering the Monte Carlo algorithm, the N0 1000 reduced the route cost, and its policy provided almost 100% generalization, as the new sources reached the target with the same deterministic policy. This method is suitable for both stochastic and deterministic environments and for unit and weighted rewards.
 
+Our evaluation of QLearning applied to the problem of route finding showed that it is a powerful approach. Our experiments showed that it is able to find the path with less than 1000 (which takes 2 seconds to run), and with more episodes, it is able to reach starting from almost any state. We considered more than one reward scheme and a deterministic and stochastic environment. Despite the similar results, each context presented subtle details. Using a linear function as an approximation for the Q table presented extra difficulties, but our experiments were also able to identify good parameters, and the agent reached the target.
+
+Lastly, the DQN presented the highest challenge, with difficult training and convergence. With adaptations and tests, it was able to identify a route to the target in smaller graphs and get close to the target in bigger graphs. One hypothesis for the bad performance of the DQN is that our state space and action space are discrete and really large. The output of the network will be a vector of size $n$, which can be $605$ in our experiments. A different coding of the actions and states could be considered to obtain better results.
+
 In future works, we suggest incorporating the algorithms into [SUMO](https://eclipse.dev/sumo/), a realistic simulation of urban mobility. In this case, it would be possible to integrate traffic, gas, velocity, and time into the environment. We also suggest adding stop points before reaching the target node.
+
+
 
 ## Contributions
 
