@@ -51,7 +51,6 @@ class MCAgent:
     def update_epsilon(self, s=''):
         # make it decay exponentially
         self.epsilon -= (self.max_epsilon - self.min_epsilon) / self.n_episodes
-        
 
     def set_seed(self):
         random.seed(self.seed)
@@ -129,7 +128,7 @@ class MCAgent:
             if self.alpha is False:
                 valor_medio = np.sum(j) / len(j)
                 self.Q.update([((i[0], i[1]), valor_medio)])
-                # self.Q[i[0], i[1]] = valor_medio
+                
             else:
                 self.N[i[0], i[1]] += 1
                 q = self.Q.get((i[0], i[1]))
@@ -138,9 +137,9 @@ class MCAgent:
                 g = np.sum(j)
                 valor_medio = q + (1 / self.N[i[0], i[1]]) * (g - q)
                 self.Q.update([((i[0], i[1]), valor_medio)])
+
         return
 
-    
     def train(self):
         self.epsilon = self.max_epsilon
 
@@ -157,6 +156,7 @@ class MCAgent:
                 self.update_epsilon()
 
         self.policy = {i: argmax(self.Q, i)[0] for i in range(len(self.env.G.nodes))}
+        
 
     def route_to_target(self, source, target):
         route = [source]
