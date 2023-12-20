@@ -4,7 +4,7 @@ Our objective is to use reinforcement learning in the problem of path finding fo
 
  The problem can be defined as follows:
 
-**Definition:** With a weighted directed graph $G = (V, E)$, and a starting node $v$, find the shortest path to node $u$, i.e., the subset of $E$ that connects $v$ to $u$ and has minimal sum of edges weights.
+**Definition:** With a weighted directed graph $G = (V, E)$, and a starting node $v$, find the shortest path to node $u$, i.e., the subset of $E$ that connects $v$ to $u$ and has a minimal sum of edges weights.
 
 ## Reinforcement learning formulation
 
@@ -12,7 +12,7 @@ Our objective is to use reinforcement learning in the problem of path finding fo
 
 - Episodic: The episode ends when the agent arrives on the destination node or in a node without leaving edges.
 - The time discretization occurs at the nodes of the graph, i.e., the crossings of the streets in which the agent needs to make a decision of which direction to follow.
-- States: $n$ states $v_i \in V$ , each is a node of the graph.
+- States: $n$ states $v_i \in V$, each is a node of the graph.
 - Actions: $n$ actions, each one corresponds to moving to a specific node. It is important to note that the possible actions are dependent on each state. The action of moving to node $u$, if the state is node $v$, can only be made if there is an edge from $v$ to $u$.
 
 ### Rewards
@@ -87,19 +87,22 @@ The Q-matrix was initialized with all values equal to $0$ and $-\infty$ in pairs
 
 #### Parameters analysis
 
-Our agent has two main parameters that need to be considered: the learning rate $\alpha$ and the weight of future rewards $\gamma$. The $\alpha$ values tested are $\{0.05, 0.1, 0.3, 0.5, 0.7\}$ and the $\gamma$ values are $\{0.1, 0.25, 0.5, 0.9, 0.99\}$. When varying $\alpha$, $\gamma = 0.99$, when varying $\gamma$, $\alpha = 0.7$. The experiments were performed with $1000$ episodes of $1000$ steps at max each.
+Our agent has two main parameters that need to be considered: the learning rate $\alpha$ and the weight of future rewards $\gamma$. The $\alpha$ values tested are $\{0.05, 0.1, 0.3, 0.5, 0.7\}$, and the $\gamma$ values are $\{0.1, 0.25, 0.5, 0.9, 0.99\}$. When varying $\alpha$, $\gamma = 0.99$, when varying $\gamma$, $\alpha = 0.7$. The experiments were performed with $1000$ episodes of $1000$ steps at max each.
 
-The following figures present the results of our experiments. Looking at the first column, we see that every reward scheme and environment was able to reach the optimal cost (around 1700) with some parameter value. As expected, the optimal policies were obtained with higher $\gamma$ values. Looking at the figures of the unit reward scheme of deterministic and stochastic environments, we see that there is not a big relation between the parameter values and the metrics. Because there is no clear tendency to increase or decrease, and the deviation (a grey area) is really big.
+The following figures present the results of our experiments. Looking at the first column, we see that every reward scheme and environment reached the optimal cost (around 1700) with some parameter value. The optimal policies were obtained with higher $\gamma$ values as expected. Looking at the figures of the unit reward scheme of deterministic and stochastic environments, we see that there is not a big relation between the parameter values and the metrics. Because there is no clear tendency to increase or decrease, and the deviation (a grey area) is really big.
 
-Looking at the third column of the plots of weighted reward with deterministic or stochastic environment, we can see that the learning rate of 0.3 obtained high values of mean reward, and in the stochastic environment, a bigger learning rate resulted in lower performance. We can also see the positive outcome of increasing the discount factor.
+![](figures/ql_unit_det.png)
 
-![Alt text](figures/ql_unit_det.png)
+![](figures/ql_unit_sto.png)
 
-![Alt text](figures/ql_weig_det.png)
+Looking at the third column of the plots of weighted reward with deterministic or stochastic environment, we can see that the learning rate of 0.3 obtained high values of mean reward, and in the stochastic environment, a bigger learning rate resulted in lower performance. We can also see the positive outcome of increasing the $\gamma$. $\gamma$ values lower than 0.9 did not reached the optimal policy.
 
-![Alt text](figures/ql_unit_sto.png)
 
-![Alt text](figures/ql_weig_sto.png)
+![](figures/ql_weig_det.png)
+
+The stochastic enviroment presented similar results, but it was more sensitive to the learning rate, both low or high values resulted in low mean reward per episodes. 
+
+![](figures/ql_weig_sto.png)
 
 #### Generalization
 
@@ -116,13 +119,13 @@ The next figure shows the fraction of states such that the agent can start from 
 
 ![](figures/qlearning_generalization_fig2.png)
 
-![Alt text](figures/qlearning_generalization_fig3.png)
+![](figures/qlearning_generalization_fig3.png)
 
 #### Value function
 
 Another interesting analysis is to study how the value function learning by the agent differs at the unit and weighted reward scheme. To do that, we trained the two agents with 1000 episodes with each of the reward schemes. Then, the value function can be obtained from the Q matrix by calculating the maximum value of each state. The following plot shows all states colored by the value function; the more red, the higher the value function. By comparing both plots, we can see that in the unit reward, many nodes that are neighbors of the target have high values, but in the weighted, only a few of them have. This could be caused because the weighted reward scheme prioritizes the nodes with the shortest distance and not any node near the target.
 
-![Alt text](figures/qlearning_value_function.png)
+![](figures/qlearning_value_function.png)
 
 ### QLearning with Linear Function
 
@@ -147,15 +150,15 @@ The results are displayed in the following graphs. The black line represents the
 
 We can see that in the deterministic environment, when the learning rate increased, the path cost was reduced, computing time was reduced, and mean rewards increased. After the value of the learning rate $0.3$, all runs obtained the optimal cost. There is also not a big difference between the computing time of units and weighted reward schemes.
 
-Looking at the stochastic environment, we see a curious pattern that only the learning rate equal to $0.3$ was able to obtain the optimal policy, while the other values were not. These results also do not present a big difference between the unit and weighted reward schemes.
-
 ![](figures/ql_func_unit_det.png)
 
-![Alt text](figures/ql_func_weig_det.png)
+![](figures/ql_func_weig_det.png)
 
-![Alt text](figures/ql_func_unit_sto.png)
+Looking at the stochastic environment, we see a curious pattern that only the learning rate equal to $0.3$ was able to obtain the optimal policy, while the other values were not. These results also do not present a big difference between the unit and weighted reward schemes.
 
-![Alt text](figures/ql_func_weig_sto.png)
+![](figures/ql_func_unit_sto.png)
+
+![](figures/ql_func_weig_sto.png)
 
 
 
@@ -170,20 +173,43 @@ The DQN used a replay buffer of size 10000, and at each iteration of the environ
 - The training duration was defined in the number of steps, not in the number of episodes;
 - The environment was used only with the deterministic approach;
 - The unit reward scheme was not tested;
-- A new reward scheme was designed that instead of returning $-w_{(s, a)}$ (cost of edge from $s$ to $a$), it returns $-d_{(a, t)}$, the spatial distance between the node $a$ and the target $t$. This reward scheme was designed to incentivize the model to go to states closer to the target.
-- A new reward scheme was designed that returned $-0.5(w_{(s, a)} + d_{(s, a)})$;
-- Episodes started at random states;
+- A new reward scheme was designed that returns $-0.5(w_{(s, a)} + d_{(s, a)})$, $d_{(a, t)}$ is the spatial distance between the node $a$ and the target $t$. This reward scheme was designed to incentivize the model to go to states closer to the target.
 - We did not permit the target and online policy to select invalid actions; the objective was to reduce the computational cost of fitting many invalid movements;
+- The max number of steps per episode (steps performed before resetting envoriment) was $n/2$ (half the number of nodes).
+
+Based in the referece, at each step the weights of the target network $\theta_t$ are updated from the online netwotk $\theta_o$ following this smooth update rule: $\theta_t = \theta_t 0.005 + \theta_o 0.995$. This resulted in a more stable loss over training. The learning rate for the optimizer was of 1e-4.
 
 ### Performance study
 
-Our initial tests showed that it was really difficult for the agent to learn the optimal policy, and as the training time of a single agent took around 20 minutes, it was not possible to perform an exhaustive experiment of parameters. For that reason, we decided to apply it in smaller graphs and slowly increase the number of nodes of the graph to understand the capabilities of the agent. We can obtain smaller graphs by setting a radius and selecting only the network inside this radius. We tested this radius with sizes equal to 200, 40,0, and 60 and performed a few tries with each.
+Our initial tests showed that it was really difficult for the agent to learn the optimal policy, and as the training time of a single agent took several minutes, it was not possible to perform an exhaustive experiment of parameters. For that reason, we decided to apply it in smaller graphs and slowly increase the number of nodes of the graph to understand the capabilities of the agent. We can obtain smaller graphs by setting a radius and selecting only the network inside this radius. We tested this radius with sizes equal to 200, 400, and 600 and trained the enviroment with _weighted_ rewards and with _weighted+distance_ rewards.
 
 #### Radius 200
 
-Our first test with a radius of 200 and a weighted reward scheme was not able to achieve the optimal policy. We trained for 200,000 iterations, with an update of the target network at every 1000 iterations. By looking at the evolution of the policy, we can see that at iteration 125000, the policy was optimal; however, at step 175000, this changed to an anon-optimal policy. By looking at the final policy of all states, we can see that we have almost the perfect path from source to target, missing only one edge.
+Our first test with a radius of 200 and a weighted reward scheme was not able to achieve the optimal policy. By looking at the policy at different steps, we can see that the agent finds the optmal policy, but later changes it. The mean reward per episode starts decreasing after 1000 episodes. We can also verify that the value function makes sense (nods close to the target have higher value). By looking at the final policy of all states, we can see that we have almost the perfect path from source to target, missing only one edge.
 
+![](figures/dqn_200_agent1.png)
 
+This second test is using the _weighted+distance_ reward scheme, we obtain a similar behavior of the mean rewards per episode, but the final policy is the optmal one.
+
+![](figures/dqn_200_agent2.png)
+
+#### Radius 400
+
+Similarly, we trained an agent with the weighted reward scheme in the 400 radius graph. We can see that the agent's policy reaches the target at the step 12500, but the final policy is not a desired one. Differently from before, we did not see a decrease of the mean reward overtime. We can see that many states point to the target, but the optimal policy is not achieved.
+
+![](figures/dqn_400_agent1.png)
+
+Performing the same training with the _weighted+distance_ reward scheme resulted in a worse performance, we cansee that the agent almost never gets close to the target.
+
+![](figures/dqn_400_agent2.png)
+
+#### Radius 600
+
+By using the larger graph, with more than 100 nodes, we achive a similar result. Both _weighted_ and _weighted+distance_ were not able to obtain the optimal policy. We can see that the _weighted_ reach the target at step 12500, but later forgets it. We can still see this trend of mean reward decreasing overtime.
+
+![](figures/dqn_600_agent1.png)
+
+![](figures/dqn_600_agent2.png)
 
 One hypothesis for the bad performance of the DQN (it is well known that it is tricky) is that our state space and action space are discrete and really large. The output of the network will be a vector of size $n$, which can be $605$ in our experiments, a really unusual application of the DQN. 
 
