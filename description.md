@@ -38,7 +38,7 @@ We implemented our environment using Numpy, OSMnx, and Networkx libraries to sup
 
 
 ![Alt text](figures/network.png)
-<p>         Figure 2 - Campinas city network</p>
+<p>         Figure 1 - Campinas city network</p>
 
 The environment keeps the current state of the simulation and has the step method. This method receives an action and, according to the current state, returns to the new state of performing this action. It also returns the reward obtained from the action. If the action is possible, i.e., there is an edge from
 the state to the action node, it performs the step and updates the state. Otherwise, the state stays at v.
