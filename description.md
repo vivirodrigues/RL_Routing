@@ -46,14 +46,32 @@ According to Richard S. Sutton and Andrew G. Barto (2018), for each state-action
 
 ### Experiments
 
+
 The experiments of Monte Carlo methods are performed on a computer with Intel(R) Core(TM) i5-10210U CPU $@$ 1.60GHz, 4 cores, 2 threads per core, Memory 8 GB, and Linux Ubuntu 22.04.3 LTS.
 
 The first experiment implements three different values for $N{\textrm{0}}$: 200, 600, and 1000. These values are fixed during model's training. We use the $N{\textrm{0}}$ variable to update $\varepsilon$ and $\alpha$, which decreases during training. The Figure below presents the results of the cost, computational time, and rewards for unit reward and deterministic environment. The cost represents the total distance of the route; the computational time shows the training duration, and the rewards are obtained during the training of the model.
 
-FIGURA UNIT DETERMINISTIC 1
+![Alt text](figures/unit_deterministic1.png)
+<p style="text-align: center;">Figure 1 - Cost, computational time and reward obtained in unit deterministic environment</p>
 
 
-According to the Figure, the experiment demonstrates its most inferior performance when the N0 variable is 200, because its configuration implies in routes with high values of route cost. Also, the obtained reward values are lower. It indicates that the routes of N0 200 do not reach the target. 
+According to the Figure, the experiment demonstrates its most inferior performance when the N0 variable is 200, because its configuration implies in routes with high values of route cost. Also, the obtained reward values are lower. We obtained a decrease in the average cost of the route, that is, the total distance traveled, as we increased the value of N0 while the average rewards increased. Its behavior indicates that when N0 equals one thousand, we have routes that reach the target using shorter paths. Also, the computational time for executing model training increases when N0 equals one thousand. Continuing in the deterministic environment, Figure 2 below represents the results for weighted reward.
+
+![Alt text](figures/weighted_deterministic1.png)
+<p style="text-align: center;">Figure 2 - Cost, computational time and reward obtained</p>
+
+The main difference between unit and weighted reward results in a deterministic environment is that N0 600 has more variance in results. However, in both reward methods, the N0 1000 achieves a route mean cost close to the optimal 1700. In this perspective, in the weighted deterministic scenario, we have N0 1000 as the best result despite the increase in the computational time of execution. Figure 3 shows the unit stochastic environment.
+
+![Alt text](figures/unit_stochastic.png)
+<p style="text-align: center;">Figure 3 - Cost, computational time and reward obtained</p>
+
+In the unit reward and stochastic environment, the cost result was more stable for different values of N0. According to the execution time graphic, the value 1000 for N0 corresponds to an average computational time of more than 150 seconds. Still, its configuration represents the best mean route cost and mean reward obtained. Then, Figure 4 shows the weighted stochastic environment.
+
+![Alt text](figures/weighted_stochastic.png)
+<p style="text-align: center;">Figure 3 - Cost, computational time and reward obtained</p>
+
+Both weighted and unit reward methods perform similarly, achieving a value of more than 800 as the mean reward when N0 equals 1000. A difference from deterministic environment is that the mean of rewards when N0 600 is worst than other N0 values. However, N0 1000 is the best result for all reward methods and environments.
+
 
 The second experiment applies different values for discount factor $\gamma$ and $\varepsilon_{\textrm{min}}$, which are fixed during model's training. In this case, we do not use $\alpha$ and the $\varepsilon$ decays linearly from maximum until minimum value. The Figure bellow presents the unit reward and deterministic environment.
 
