@@ -109,7 +109,7 @@ We implemented an experiment for analyse the generalization of the policy obtain
 
 According to Figure 10, the mean percentage of starting nodes that reach the target using the deterministic policy is low when N0 equals 200 and close to 100% when N0 equals 1000. Also, N0 equals 600, and 1000 implies routes with values relative to 1 on the relation between route cost and optimal cost. It confirms that N0 1000 is the best value obtained in experiments. Figure 11 presents the same metrics for weighted deterministic environment.
 
-![Alt text](figures/mc_weighted_deterministic1_generalization.png)
+![Alt text](figures/mc_weighted_deterministic1_generatization.png)
 <p>           Figure 11 - Nodes that reached target and route cost relation with optimal cost in weighted deterministic environment</p>
 
 The mean number of source nodes that reached the target in a weighted deterministic environment is better using N0 200. Still, it is worse when N0 is 600 and 900, compared with a unit deterministic environment. Besides, it shows more variance in results. N0 1000 has continued to be the best value. Figure 12 presents the generalization results for unit stochastic environment.
