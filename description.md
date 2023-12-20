@@ -1,6 +1,11 @@
-# Reinforcement Learning for Routing
+# Navigating Networks: A Reinforcement Learning Approach to Path Optimization
+### Reinforcement Learning for Routing
 
-Our objective is to use reinforcement learning in the problem of path finding for a trash collector truck. An optimized path can help in obtaining a faster and more efficient trash collection. The problem can be modeled as finding the shortest path between two nodes in a graph, which has already been previously solved using other optimization approaches, heuristics, and graph algorithms. However, we want to apply reinforcement learning to this problem both for educational purposes and compare it with other approaches.
+Networks consist of nodes and edges, where nodes may represent entities such as people or animals, and edges signify their connections or relationships, such as social ties or the food chain. In the context of Geographic Networks, the scenario's geographic area is virtualized. In this virtual representation, vertices symbolize road corners, and edges delineate the streets, capturing the spatial relationships within the network.
+
+The shortest path between two nodes in a network may suggest the route with the minimum distance, reduced fuel consumption, or even a shorter time requirement. The edge cost of a Geographic Network could be the distance between the two nodes. In this perspective, this work presents optimized routes between two nodes in a geographic network, comparing the performance of different reinforcement learning methods.
+
+Our objective is to use reinforcement learning in the problem of path finding for a trash collector truck. An optimized path can help obtain a faster and more efficient trash collection. The problem can be modeled as finding the shortest path between two nodes in a graph, which has already been previously solved using other optimization approaches, heuristics, and graph algorithms. However, we want to apply reinforcement learning to this problem both for educational purposes and compare it with different approaches.
 
  The problem can be defined as follows:
 
